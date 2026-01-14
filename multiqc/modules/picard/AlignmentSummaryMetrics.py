@@ -77,20 +77,19 @@ def parse_reports(module):
     module.write_data_file(data_by_sample, f"multiqc_{module.anchor}_AlignmentSummaryMetrics")
 
     # Add to general stats table
-    module.general_stats_headers["PCT_PF_READS_ALIGNED"] = {
-        "title": "% Aligned",
-        "description": "Percent of aligned reads",
-        "max": 100,
-        "min": 0,
-        "suffix": "%",
-        "format": "{:,.0f}",
-        "scale": "RdYlGn",
-        "modify": lambda x: util.multiply_hundred(x),
-    }
-    for s_name in data_by_sample:
-        if s_name not in module.general_stats_data:
-            module.general_stats_data[s_name] = dict()
-        module.general_stats_data[s_name].update(data_by_sample[s_name])
+    headers = {
+        "PCT_PF_READS_ALIGNED": {
+            "title": "% Aligned",
+            "description": "Percent of aligned reads",
+            "max": 100,
+            "min": 0,
+            "suffix": "%",
+            "format": "{:,.0f}",
+            "scale": "RdYlGn",
+            "modify": lambda x: util.multiply_hundred(x),  
+        }}
+
+    module.general_stats_addcols(data_by_sample, headers, namespace="Alignment_Test")
 
     # Make the bar plot of alignment read count + # aligned bases
     pdata: Dict[str, Dict] = dict()
